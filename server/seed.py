@@ -1,23 +1,16 @@
-#!/usr/bin/env python3
+from app import db
+from models import Newsletter
 
-from faker import Faker
+def seed_data():
+    with db.app.app_context():
+        db.create_all()
 
-from app import app
-from models import db, Newsletter
+        email1 = Newsletter(email='example1@example.com')
+        email2 = Newsletter(email='example2@example.com')
 
-with app.app_context():
-    
-    fake = Faker()
+        db.session.add(email1)
+        db.session.add(email2)
+        db.session.commit()
 
-    Newsletter.query.delete()
-
-    newsletters = []
-    for i in range(50):
-        newsletter = Newsletter(
-            title = fake.text(max_nb_chars=20),
-            body = fake.paragraph(nb_sentences=5),
-        )
-        newsletters.append(newsletter)
-
-    db.session.add_all(newsletters)
-    db.session.commit()
+if __name__ == '__main__':
+    seed_data()
