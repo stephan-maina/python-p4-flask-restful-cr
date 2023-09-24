@@ -1,16 +1,14 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_serializer import SerializerMixin
+from app import db
 
-db = SQLAlchemy()
-
-class Newsletter(db.Model, SerializerMixin):
-    __tablename__ = 'newsletters'
-
+class Newsletter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String)
-    body = db.Column(db.String)
-    published_at = db.Column(db.DateTime, server_default=db.func.now())
-    edited_at = db.Column(db.DateTime, onupdate=db.func.now())
+    email = db.Column(db.String(120), unique=True, nullable=False)
 
-    def __repr__(self):
-        return f'<Newsletter {self.title}, published at {self.published_at}.>'
+    def __init__(self, email):
+        self.email = email
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email
+        }
